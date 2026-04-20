@@ -15,10 +15,13 @@ We chose the following three algorithms for our comparison:
 
 
 ### Operational Notes
+Insertion Sort approaches linear $O(n)$ complexity in nearly sorted arrays because each element requires only a few comparisons and swaps to reach its correct position, significantly reducing the total number of operations compared to a random distribution.
+
 * **Dynamic Performance Guardrail:** To prevent the program from hanging during $O(n^2)$ operations, the script automatically caps **Insertion Sort** based on the input's noise level:
     * **Random Data:** Capped at 25,000 elements.
     * **Nearly Sorted (20% Noise):** Capped at 50,000 elements.
     * **Nearly Sorted (5% Noise):** Capped at 100,000 elements.
+    * 
 * **Output:** Upon completion, the script prints a detailed results table to the terminal and saves the generated plot as a `.png` file.
 ---
 
@@ -50,7 +53,7 @@ $$T_2 = T_1 \times (40^2) = T_1 \times 1600$$
 ![Nearly Sorted Results](result2.png)
 
 In this experiment, we added "noise" by randomly swapping 20% of the elements in a sorted array:
-* **Insertion Sort:** Performance improves compared to the random test because the algorithm performs fewer swaps when elements are close to their final positions. However, it is still significantly slower than $O(n \log n)$ alternatives.
+* **Insertion Sort:** Performance improves compared to the random test because the algorithm performs fewer swaps when elements are close to their final positions (as stated before). However, it is still significantly slower than $O(n \log n)$ alternatives.
 * **Merge Sort:** The runtime remains identical to the random test. Merge Sort's division logic is independent of the initial order of the data.
 * **Quick Sort:** Continues to be the fastest, as the middle-pivot strategy handles partially ordered data efficiently without falling into worst-case behavior.
 
