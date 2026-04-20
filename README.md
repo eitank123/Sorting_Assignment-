@@ -35,8 +35,9 @@ In our implementation, we intentionally skip Insertion Sort for arrays larger th
 
 #### Theoretical Runtime Estimation
 We can estimate the time Insertion Sort would have taken for 1,000,000 elements using our result from the 50,000-element test. 
+
 If $n_1 = 25,000$ and $n_2 = 1,000,000$, the ratio is 40. The estimated time $T_2$ is:
-$$T_2 = T_1 \times (20^2) = T_1 \times 1600$$
+$$T_2 = T_1 \times (40^2) = T_1 \times 1600$$
 
 **Based on our experimental measurements:**
 * **Average measured time for 25,000 elements ($T_1$):** 18.8 seconds.
