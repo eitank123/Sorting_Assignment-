@@ -54,16 +54,16 @@ In this experiment, we added "noise" by randomly swapping 20% of the elements in
 * **Quick Sort:** Continues to be the fastest, as the middle-pivot strategy handles partially ordered data efficiently without falling into worst-case behavior.
 
 ### Array Size Limit for Insertion Sort
-For the same reason as in the random array (Running for too long), Insertion sort was capped at **25,000** elements
+For the same reason as in the random array (Running for too long), Insertion sort was capped at **50,000** elements as mentioned in the operational notes (20% noise)
 
 #### Lower Bound Estimation
 Because Insertion Sort performs more linearly on nearly sorted data, the quadratic approximation $O(n^2)$ used for random arrays would result in an unrealistically high estimate. Instead, we can calculate a **lower bound** based on its best-case linear complexity $O(n)$. 
 
-Given that the algorithm must inspect every element at least once, we can estimate that sorting 1,000,000 elements will take at least 40 times longer than sorting 25,000 elements:
+Given that the algorithm must inspect every element at least once, we can estimate that sorting 1,000,000 elements will take at least 20 times longer than sorting 50,000 elements:
 
-* **Measured average for 25,000 elements ($T_1$):** 1.36 seconds
-* **Size Ratio:** $1,000,000 / 25,000 = 40$
-* **Estimated Lower Bound ($T_2$):** $1.36 \times 40 = \mathbf{54.4}$ **seconds**
+* **Measured average for 50,000 elements ($T_1$):** 14 seconds
+* **Size Ratio:** $1,000,000 / 50,000 = 20$
+* **Estimated Lower Bound ($T_2$):** $14 \times 20 = \mathbf{280}$ **seconds**
 
 In practice, due to the 20% noise level, the actual time would be higher than this lower bound, but this calculation demonstrates that even in a nearly-sorted state, the overhead of the algorithm scales significantly compared to Merge or Quick Sort.
 
