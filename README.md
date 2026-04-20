@@ -2,56 +2,92 @@
 
 **Submitted by:** Eitan Karp, Oren Avishid
 
-**Course:** Data Structures 
+**Course:** Data Structures - Spring 2026
 
 ## Project Overview
-In this assignment, we implemented and compared three sorting algorithms to evaluate their efficiency under different conditions. The experiments focus on the differences between comparison-based algorithms with varying time complexities and the impact of data structure (fully random vs. nearly sorted) on execution time.
+The goal of this assignment is comparing the running times of different sorting algorithms. We conducted experiments to see how various data distributions (random vs. nearly sorted) and increasing array sizes affect performance.
 
 ### Selected Algorithms
-The following three algorithms were chosen for this analysis:
-* **Insertion Sort (ID 3):** A simple sorting algorithm with a time complexity of $O(n^2)$ in average and worst cases.
-* **Merge Sort (ID 4):** A "divide and conquer" algorithm that guarantees a time complexity of $O(n \log n)$ in all cases.
-* **Quick Sort (ID 5):** An efficient algorithm with an average complexity of $O(n \log n)$. Our implementation uses a middle-element pivot strategy to optimize performance.
+We chose the following three algorithms for our comparison:
+* **Insertion Sort (ID 3):** A simple algorithm with $O(n^2)$ complexity.
+* **Merge Sort (ID 4):** A stable divide-and-conquer algorithm with $O(n \log n)$ complexity.
+* **Quick Sort (ID 5):** An efficient algorithm with average $O(n \log n)$ complexity, using a middle-element pivot strategy.
 
+
+### Operational Notes
+* **Dynamic Performance Guardrail:** To prevent the program from hanging during $O(n^2)$ operations, the script automatically caps **Insertion Sort** based on the input's noise level:
+    * **Random Data:** Capped at 25,000 elements.
+    * **Nearly Sorted (20% Noise):** Capped at 50,000 elements.
+    * **Nearly Sorted (5% Noise):** Capped at 100,000 elements.
+* **Output:** Upon completion, the script prints a detailed results table to the terminal and saves the generated plot as a `.png` file.
 ---
 
 ## Results Analysis – Part B: Random Arrays
 
-**TODO: Add image**
+![Random Array Results](result1.png)
 
-As shown in the `result1.png` plot, there is a massive disparity between the growth rates of these algorithms:
-* **Merge Sort & Quick Sort:** Both exhibit a near-linear (log-linear) growth rate, demonstrating high efficiency even as the array size reaches 250,000 elements.
-* **Insertion Sort:** Shows a clear quadratic curve. Even at relatively small sizes, its execution time escalates drastically compared to the more advanced algorithms.
+As shown in the `result1.png` plot, there is a massive disparity between the growth rates:
+* **Merge Sort & Quick Sort:** These algorithms demonstrate high efficiency, maintaining a near-linear growth rate even as the size reaches 1,000,000 elements.
+* **Insertion Sort:** Shows a steep quadratic curve $O(n^2)$. Its execution time becomes the dominant factor even at relatively small array sizes.
 
 ### Array Size Limit for Insertion Sort
-In our code, we chose to skip Insertion Sort for arrays larger than **10,000** elements. This decision was made due to the algorithm's $O(n^2)$ complexity. In such an algorithm, doubling the input size results in a fourfold increase in execution time, making tests on very large arrays impractical for a single execution run.
+In our implementation, we intentionally skip Insertion Sort for arrays larger than **25,000** elements. Since it has a quadratic time complexity, doubling the input size quadruples the execution time. Sorting 1,000,000 elements would be approximately 1600 times slower than sorting 50,000 elements, which is impractical for a standard test run.
 
 #### Theoretical Runtime Estimation
-We can estimate how long Insertion Sort would have taken to sort 250,000 elements based on the results measured for 10,000 elements. 
-If for $n_1 = 10,000$ the runtime is $T_1$, then for $n_2 = 250,000$ (a ratio of 25x), the estimated time $T_2$ would be:
-$$T_2 = T_1 \times (25^2) = T_1 \times 625$$
+We can estimate the time Insertion Sort would have taken for 1,000,000 elements using our result from the 50,000-element test. 
+If $n_1 = 25,000$ and $n_2 = 1,000,000$, the ratio is 40. The estimated time $T_2$ is:
+$$T_2 = T_1 \times (20^2) = T_1 \times 1600$$
 
-**Calculation based on experimental results:**
-* Average time measured for 10,000 elements ($T_1$): **[Fill in the mean time from your terminal output]** seconds.
-* Estimated time for 250,000 elements: **[Fill in the result]** seconds (approx. **[Fill in]** minutes).
+**Based on our experimental measurements:**
+* **Average measured time for 25,000 elements ($T_1$):** 18.8 seconds.
+* **Estimated time for 1,000,000 elements:** 30,080 seconds (approx. 8 hours).
 
 ---
 
 ## Results Analysis – Part C: Nearly Sorted Arrays (20% Noise)
 
-**TODO: Add image**
+![Nearly Sorted Results](result2.png)
 
-In this experiment, we tested the impact of partial order on performance:
-* **Insertion Sort:** There is a noticeable improvement in performance compared to the random test. In "nearly sorted" scenarios, the number of required swaps is significantly lower, which highlights the algorithm's sensitivity to initial data order. However, it still remains significantly slower than Merge and Quick Sort.
-* **Merge Sort:** Execution time remained stable and nearly identical to the first experiment. This is expected, as Merge Sort performs the same division and merging operations regardless of the initial order of elements.
-* **Quick Sort:** Continued to show the best overall performance, leveraging the partially sorted structure of the array to maintain efficient partitioning.
+In this experiment, we added "noise" by randomly swapping 20% of the elements in a sorted array:
+* **Insertion Sort:** Performance improves compared to the random test because the algorithm performs fewer swaps when elements are close to their final positions. However, it is still significantly slower than $O(n \log n)$ alternatives.
+* **Merge Sort:** The runtime remains identical to the random test. Merge Sort's division logic is independent of the initial order of the data.
+* **Quick Sort:** Continues to be the fastest, as the middle-pivot strategy handles partially ordered data efficiently without falling into worst-case behavior.
+
+### Array Size Limit for Insertion Sort
+For the same reason as in the random array (Running for too long), Insertion sort was capped at **25,000** elements
+
+#### Lower Bound Estimation
+Because Insertion Sort performs more linearly on nearly sorted data, the quadratic approximation $O(n^2)$ used for random arrays would result in an unrealistically high estimate. Instead, we can calculate a **lower bound** based on its best-case linear complexity $O(n)$. 
+
+Given that the algorithm must inspect every element at least once, we can estimate that sorting 1,000,000 elements will take at least 40 times longer than sorting 25,000 elements:
+
+* **Measured average for 25,000 elements ($T_1$):** 1.36 seconds
+* **Size Ratio:** $1,000,000 / 25,000 = 40$
+* **Estimated Lower Bound ($T_2$):** $1.36 \times 40 = \mathbf{54.4}$ **seconds**
+
+In practice, due to the 20% noise level, the actual time would be higher than this lower bound, but this calculation demonstrates that even in a nearly-sorted state, the overhead of the algorithm scales significantly compared to Merge or Quick Sort.
 
 ---
 
 ## How to Run the Experiments
 
-The program includes a Command Line Interface (CLI) to configure experiment parameters.
+The program includes a Command Line Interface (CLI) that allows for precise control over the experimental parameters.
 
-**Command to run the experiment with 20% noise (as shown in result2):**
+### Available Arguments
+* **`-a`, `--algorithms`**: Specify which algorithms to include in the test by their ID.
+    * `3`: Insertion Sort
+    * `4`: Merge Sort
+    * `5`: Quick Sort
+    * *Example:* `-a 3 4 5`
+* **`-s`, `--sizes`**: A space-separated list of array sizes ($n$) to be tested.
+    * *Example:* `-s 100 1000 10000 100000 1000000`
+* **`-e`, `--experiment`**: Defines the data distribution and noise level.
+    * `0`: Fully Random integers (saves to `result1.png`).
+    * `1`: Nearly Sorted with 5% noise (saves to `result2.png`).
+    * `2`: Nearly Sorted with 20% noise (saves to `result2.png`).
+* **`-r`, `--repetitions`**: The number of times to repeat each test case to calculate the average and standard deviation.
+
+### Example Command
+To run the experiment for all three algorithms on nearly-sorted data with 20% noise across multiple sizes:
 ```bash
-python run_experiments.py -s 100 1000 5000 10000 50000 100000 250000 -e 2 -r 5
+python run_experiments.py -s 100 1000 5000 10000 50000 100000 250000 1000000 -e 2 -r 5
